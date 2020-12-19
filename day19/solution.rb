@@ -1,3 +1,5 @@
+require "set"
+
 def parse_line(line)
   return line.gsub("\n", "")
 end
@@ -75,5 +77,45 @@ def solve(rules, msgs)
   return p1, p2
 end
 
+def build_regex(rules, key, final, p2)
+  if p2 && key == '8'
+    rule42 = build_regex(rules, "42", final, p2)
+    return "(#{rule42})+"
+  elsif p2 && key == '11'
+    rule42 = build_regex(rules, "42", final, p2)
+    rule31 = build_regex(rules, "31", final, p2)
+    comp = []
+    for i in 1..6
+      comp.append(rule42 * i + rule31 * i)
+    end
+    return "(#{comp.join('|')})"
+  elsif final[key]
+    return final[key]
+  elsif rules[key] == 'a' || rules[key] == 'b'
+    return rules[key]
+  else
+    res = []
+    rules[key].split('|').each do |rule|
+      res.append((rule.split(' ').map {|subkey| build_regex(rules, subkey, final, p2)}).join(''))
+    end
+    result = nil
+    if res.size == 1
+      result = res[0]
+    else
+      result = "(#{res.join('|')})"
+    end
+    final[key] = result
+    return result
+  end
+end
+
+def solve_regex(rules, msgs, p2)
+  regex = "^" + build_regex(rules, "0", {}, p2) + "$"
+  puts regex
+  return msgs.count {|msg| msg =~ Regexp.new(regex)}
+end
+
 rules, msgs = read_input("data.txt")
 puts solve(rules, msgs)
+puts solve_regex(rules, msgs, false)
+puts solve_regex(rules, msgs, true)
