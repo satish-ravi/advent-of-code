@@ -2,6 +2,33 @@ use std::io::{self, BufRead};
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::collections::VecDeque;
+use std::cmp::Ordering;
+use std::collections::BinaryHeap;
+
+#[derive(Copy, Clone, Eq, PartialEq)]
+struct State<T: Eq + PartialEq + Copy + Clone> {
+    cost: usize,
+    node: (T, usize),
+}
+
+// The priority queue depends on `Ord`.
+// Explicitly implement the trait so the queue becomes a min-heap
+// instead of a max-heap.
+impl<T: Eq + PartialEq + Copy + Clone> Ord for State<T> {
+    fn cmp(&self, other: &Self) -> Ordering {
+        // Notice that the we flip the ordering on costs.
+        // In case of a tie we compare positions - this step is necessary
+        // to make implementations of `PartialEq` and `Ord` consistent.
+        other.cost.cmp(&self.cost)
+    }
+}
+
+// `PartialOrd` needs to be implemented as well.
+impl<T: Eq + PartialEq + Copy + Clone> PartialOrd for State<T> {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
 
 type Point = (usize, usize);
 type Edge = (char, char, usize, usize);
@@ -114,27 +141,14 @@ impl Tunnel {
     }
 
     fn find_all_keys(&self) -> usize {
-        let mut queue = HashSet::new();
+        let mut queue = BinaryHeap::new();
         let mut dist = HashMap::new();
         let mut prev: HashMap<(char, usize), ((char, usize), usize)> = HashMap::new();
-        let mut visited = HashSet::new();
 
-        queue.insert(('@', 0));
+        queue.push(State { node: ('@', 0) , cost: 0});
         dist.insert(('@', 0), 0);
-        while queue.len() > 0 {
-            let mut current = ('0', 0);
-            let mut min_dist = usize::MAX;
-            for ele in &queue {
-                let distance = *dist.get(&ele).unwrap();
-                if distance < min_dist {
-                    current = *ele;
-                    min_dist = distance;
-                }
-            }
-            if current == ('0', 0) {
-                panic!("no path");
-            }
-            if current.1 == 2usize.pow(self.keys.len() as u32) - 1 {
+        while let Some(State { cost, node }) = queue.pop() {
+            if node.1 == 2usize.pow(self.keys.len() as u32) - 1 {
                 // print logic
                 // let mut path = Vec::new();
                 // let mut cur = current;
@@ -147,18 +161,17 @@ impl Tunnel {
                 // for ele in path {
                 //     println!("{:?}", ele);
                 // }
-                return min_dist;
+                return cost;
             }
-            queue.remove(&current);
-            visited.insert(current);
-            for neighbor in self.get_neighbors(current) {
-                if !visited.contains(&neighbor.0) {
-                    let alt_dist = min_dist + neighbor.1;
-                    queue.insert(neighbor.0);
-                    if !dist.contains_key(&neighbor.0) || alt_dist < *dist.get(&neighbor.0).unwrap() {
-                        dist.insert(neighbor.0, alt_dist);
-                        prev.insert(neighbor.0, (current, alt_dist));
-                    }
+            if dist.contains_key(&node) && cost > *dist.get(&node).unwrap() {
+                continue;
+            }
+            for neighbor in self.get_neighbors(node) {
+                let alt_dist = cost + neighbor.1;
+                if !dist.contains_key(&neighbor.0) || alt_dist < *dist.get(&neighbor.0).unwrap() {
+                    queue.push(State {node: neighbor.0, cost: alt_dist});
+                    dist.insert(neighbor.0, alt_dist);
+                    prev.insert(neighbor.0, (node, alt_dist));
                 }
             }
         }
@@ -238,28 +251,15 @@ impl Tunnel4 {
     }
 
     fn find_all_keys(&self) -> usize {
-        let mut queue = HashSet::new();
+        let mut queue = BinaryHeap::new();
         let mut dist = HashMap::new();
         let mut prev: HashMap<(FourChar, usize), ((FourChar, usize), usize)> = HashMap::new();
-        let mut visited = HashSet::new();
 
         let src = ('@', '@', '@', '@');
-        queue.insert((src, 0));
+        queue.push(State { node: (src, 0), cost: 0 });
         dist.insert((src, 0), 0);
-        while queue.len() > 0 {
-            let mut current = (('0', '0', '0', '0'), 0);
-            let mut min_dist = usize::MAX;
-            for ele in &queue {
-                let distance = *dist.get(&ele).unwrap();
-                if distance < min_dist {
-                    current = *ele;
-                    min_dist = distance;
-                }
-            }
-            if current == (('0', '0', '0', '0'), 0) {
-                panic!("no path");
-            }
-            if current.1 == 2usize.pow(self.keys.len() as u32) - 1 {
+        while let Some(State { cost, node }) = queue.pop() {
+            if node.1 == 2usize.pow(self.keys.len() as u32) - 1 {
                 // print logic
                 // let mut path = Vec::new();
                 // let mut cur = current;
@@ -272,18 +272,17 @@ impl Tunnel4 {
                 // for ele in path {
                 //     println!("{:?}", ele);
                 // }
-                return min_dist;
+                return cost;
             }
-            queue.remove(&current);
-            visited.insert(current);
-            for neighbor in self.get_neighbors(current) {
-                if !visited.contains(&neighbor.0) {
-                    let alt_dist = min_dist + neighbor.1;
-                    queue.insert(neighbor.0);
-                    if !dist.contains_key(&neighbor.0) || alt_dist < *dist.get(&neighbor.0).unwrap() {
-                        dist.insert(neighbor.0, alt_dist);
-                        prev.insert(neighbor.0, (current, alt_dist));
-                    }
+            if dist.contains_key(&node) && cost > *dist.get(&node).unwrap() {
+                continue;
+            }
+            for neighbor in self.get_neighbors(node) {
+                let alt_dist = cost + neighbor.1;
+                if !dist.contains_key(&neighbor.0) || alt_dist < *dist.get(&neighbor.0).unwrap() {
+                    queue.push(State {node: neighbor.0, cost: alt_dist});
+                    dist.insert(neighbor.0, alt_dist);
+                    prev.insert(neighbor.0, (node, alt_dist));
                 }
             }
         }
