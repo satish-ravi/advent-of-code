@@ -1,12 +1,38 @@
 use std::io::{self, BufRead};
 use std::collections::HashMap;
-use std::collections::HashSet;
+use std::cmp::Ordering;
+use std::collections::BinaryHeap;
 
 struct Maze {
     grid: Vec<Vec<char>>,
     portals: HashMap<(usize, usize), (usize, usize, char)>,
     src: (usize, usize, usize),
     dest: (usize, usize, usize)
+}
+
+#[derive(Copy, Clone, Eq, PartialEq)]
+struct State {
+    cost: usize,
+    node: (usize, usize, usize),
+}
+
+// The priority queue depends on `Ord`.
+// Explicitly implement the trait so the queue becomes a min-heap
+// instead of a max-heap.
+impl Ord for State {
+    fn cmp(&self, other: &Self) -> Ordering {
+        // Notice that the we flip the ordering on costs.
+        // In case of a tie we compare positions - this step is necessary
+        // to make implementations of `PartialEq` and `Ord` consistent.
+        other.cost.cmp(&self.cost)
+    }
+}
+
+// `PartialOrd` needs to be implemented as well.
+impl PartialOrd for State {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
 }
 
 impl Maze {
@@ -110,7 +136,11 @@ impl Maze {
             Some(&(pi, pj, dir)) => {
                 if recurse {
                     match dir {
-                        'o' => {neighbors.push((pi, pj, l+1));},
+                        'o' => {
+                            if l < 50 {
+                                neighbors.push((pi, pj, l+1));
+                            }
+                        }
                         'i' => {
                             if l > 0 {
                                 neighbors.push((pi, pj, l-1));
@@ -128,41 +158,14 @@ impl Maze {
     }
 
     fn find_steps_to_dest(&mut self, recurse: bool) -> usize {
-        let mut queue = HashSet::new();
+        let mut queue = BinaryHeap::new();
         let mut dist = HashMap::new();
         let mut prev = HashMap::new();
 
-        let mut max_level = 1;
-        if recurse {
-            max_level = 40;
-        }
-
-        for i in 2..self.grid.len() - 2 {
-            for j in 2..self.grid[0].len() - 2 {
-                if self.grid[i][j] == '.' {
-                    for l in 0..max_level {
-                        queue.insert((i, j, l));
-                        dist.insert((i, j, l), usize::MAX);
-                        prev.insert((i, j, l), (0, 0, 0));
-                    }
-                }
-            }
-        }
+        queue.push(State { node: self.src , cost: 0});
         dist.insert(self.src, 0);
-        while queue.len() > 0 {
-            let mut current = (0, 0, 0);
-            let mut min_dist = usize::MAX;
-            for ele in &queue {
-                let distance = *dist.get(&ele).unwrap();
-                if distance < min_dist {
-                    current = *ele;
-                    min_dist = distance;
-                }
-            }
-            if current == (0, 0, 0) {
-                panic!("no path");
-            }
-            if current == self.dest {
+        while let Some(State { cost, node }) = queue.pop() {
+            if node == self.dest {
                 // print logic
                 // let mut path = Vec::new();
                 // let mut cur = current;
@@ -191,20 +194,18 @@ impl Maze {
                 //         println!("From: {:?}, To: {:?}, Level: {}, Length: {}", (ele[0].0+1, ele[0].1+1), (ele[len-1].0+1, ele[len-1].1+1), ele[0].2, ele.len());
                 //     }
                 // }
-                return min_dist;
+                return cost;
             }
-            queue.remove(&current);
-            for neighbor in self.get_neighbors(current, recurse) {
-                if queue.contains(&neighbor) {
-                    let alt_dist = min_dist + 1;
-                    if alt_dist < *dist.get(&neighbor).unwrap() {
-                        dist.insert(neighbor, alt_dist);
-                        prev.insert(neighbor, current);
-                    }
+            for neighbor in self.get_neighbors(node, recurse) {
+                let alt_dist = cost + 1;
+                if !dist.contains_key(&neighbor) || alt_dist < *dist.get(&neighbor).unwrap() {
+                    queue.push(State {node: neighbor, cost: alt_dist});
+                    dist.insert(neighbor, alt_dist);
+                    prev.insert(neighbor, node);
                 }
             }
         }
-        panic!("error");
+        panic!("no path");
     }
 }
 
