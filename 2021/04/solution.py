@@ -12,10 +12,12 @@ for i in range(BOARD_SIZE):
     BINGOS.append(row)
     BINGOS.append(column)
 
+
 @dataclass
 class Element:
     num: int
     marked: bool = False
+
 
 class Board:
     board: list[list[Element]]
@@ -61,6 +63,7 @@ def read_input() -> tuple[list[Board], list[int]]:
         boards.append(Board(board_lines))
     return boards, draw
 
+
 def compute(boards: list[Board], draw: list[int]) -> None:
     bingos_set = set()
     for num in draw:
@@ -71,10 +74,11 @@ def compute(boards: list[Board], draw: list[int]) -> None:
             if board.is_bingo():
                 bingos_set.add(i)
                 if len(bingos_set) == 1:
-                    print('part1:', board.score(num))
+                    print("part1:", board.score(num))
                 elif len(bingos_set) == len(boards):
-                    print('part2:', board.score(num))
+                    print("part2:", board.score(num))
                     return
+
 
 boards, draw = read_input()
 compute(boards, draw)

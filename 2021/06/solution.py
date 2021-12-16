@@ -1,9 +1,11 @@
 from collections import defaultdict
 import sys
 
+
 def read_input() -> list[int]:
     inp = list(l.strip() for l in sys.stdin.readlines())
     return [int(n) for n in inp[0].split(",")]
+
 
 def compute(initial: list[int], days: int) -> int:
     fishes = defaultdict(int)
@@ -21,6 +23,7 @@ def compute(initial: list[int], days: int) -> int:
         fishes = new_fishes
 
     return sum(fishes.values())
+
 
 inp = read_input()
 print("part1:", compute(inp, 80))

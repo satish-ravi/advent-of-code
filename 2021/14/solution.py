@@ -1,6 +1,7 @@
 import sys
 from collections import defaultdict
 
+
 def read_input() -> tuple[str, dict[str, str]]:
     inp = [l.strip() for l in sys.stdin.readlines()]
     polymer = inp[0]
@@ -11,12 +12,13 @@ def read_input() -> tuple[str, dict[str, str]]:
 
     return polymer, pair_rules
 
+
 def polymerize(polymer: str, pair_rules: dict[str, str], n_steps: int) -> int:
     p = polymer
     for _ in range(n_steps):
         new_p = ""
         for i in range(len(p) - 1):
-            new_p += p[i] + pair_rules[p[i:i+2]]
+            new_p += p[i] + pair_rules[p[i : i + 2]]
         new_p += p[-1]
         p = new_p
 
@@ -30,7 +32,7 @@ def polymerize_optimal(polymer: str, pair_rules: dict[str, str], n_steps: int) -
     p = polymer
     count_pairs = defaultdict(int)
     for i in range(len(p) - 1):
-        count_pairs[p[i:i+2]] += 1
+        count_pairs[p[i : i + 2]] += 1
 
     for _ in range(n_steps):
         new_pairs = defaultdict(int)
@@ -54,6 +56,7 @@ def polymerize_optimal(polymer: str, pair_rules: dict[str, str], n_steps: int) -
         final_counter[ch] = count // 2
 
     return max(final_counter.values()) - min(final_counter.values())
+
 
 polymer, pair_rules = read_input()
 print("part1:", polymerize_optimal(polymer, pair_rules, 10))

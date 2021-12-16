@@ -69,3 +69,5 @@ Cargo.lock
 solution
 
 out.jar
+
+.vscode/**

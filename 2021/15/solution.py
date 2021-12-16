@@ -3,8 +3,10 @@ from copy import Error
 import sys
 import heapq
 
+
 def read_input() -> list[list[int]]:
     return [[int(c) for c in l.strip()] for l in sys.stdin.readlines()]
+
 
 def repeat_grid(grid: list[list[int]], repeat: int) -> list[list[int]]:
     new_grid = [[None for _ in range(5 * len(grid))] for _ in range(5 * len(grid))]
@@ -21,15 +23,16 @@ def repeat_grid(grid: list[list[int]], repeat: int) -> list[list[int]]:
 
     return new_grid
 
+
 def find_shortest_path(grid: list[list[int]]) -> int:
     rows = len(grid)
     cols = len(grid[0])
     start = (0, 0)
-    end = (rows-1, cols-1)
+    end = (rows - 1, cols - 1)
     visited = set()
     queue = []
 
-    costs = defaultdict(lambda: float('inf'))
+    costs = defaultdict(lambda: float("inf"))
     costs[start] = 0
     heapq.heappush(queue, (0, start))
 
@@ -53,6 +56,7 @@ def find_shortest_path(grid: list[list[int]]) -> int:
                     heapq.heappush(queue, (new_cost, (ai, aj)))
 
     raise Error("no path found")
+
 
 grid = read_input()
 print("part1:", find_shortest_path(grid))

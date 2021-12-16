@@ -20,5 +20,5 @@ for l in inp:
         p1_depth -= unit
         aim -= unit
 
-print("part1:", horizontal*p1_depth)
-print("part2:", horizontal*p2_depth)
+print("part1:", horizontal * p1_depth)
+print("part2:", horizontal * p2_depth)

@@ -1,10 +1,12 @@
 import sys
 
+
 def read_input() -> list[list[int]]:
     inp = []
     for line in sys.stdin.readlines():
         inp.append([int(x) for x in line.strip()])
     return inp
+
 
 def get_adjacent(i: int, j: int, r: int, c: int) -> list[tuple[int, int]]:
     adjacent = []
@@ -16,6 +18,7 @@ def get_adjacent(i: int, j: int, r: int, c: int) -> list[tuple[int, int]]:
         adjacent.append((ai, aj))
     return adjacent
 
+
 def get_low_points(inp: list[list[int]]) -> list[tuple[int, int]]:
     r = len(inp)
     c = len(inp[0])
@@ -26,8 +29,10 @@ def get_low_points(inp: list[list[int]]) -> list[tuple[int, int]]:
                 result.append((i, j))
     return result
 
+
 def part1(inp: list[list[int]]) -> int:
     return sum(inp[i][j] + 1 for (i, j) in get_low_points(inp))
+
 
 def part2(inp: list[list[int]]) -> int:
     basins = []
