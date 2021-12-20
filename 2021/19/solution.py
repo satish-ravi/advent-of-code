@@ -1,6 +1,7 @@
 import sys
-from collections import deque
+from collections import defaultdict, deque
 from itertools import permutations
+from typing import Optional
 
 Coord = tuple[int, int, int]
 Scanner = set[Coord]
@@ -27,13 +28,18 @@ def read_input() -> list[Scanner]:
     return scanners
 
 
-def get_offset(scanner1: Scanner, scanner2: Scanner, num_matching: int = 12) -> Coord:
+def get_offset(
+    scanner1: Scanner, scanner2: Scanner, num_matching: int = 12
+) -> Optional[Coord]:
+    offset_counts = defaultdict(int)
     for b1 in scanner1:
         for b2 in scanner2:
             offset = tuple(b1[i] - b2[i] for i in range(DIMENSIONS))
-            s2_offset = apply_offset(scanner2, offset)
-            if len(scanner1.intersection(s2_offset)) >= num_matching:
-                return offset
+            offset_counts[offset] += 1
+    for offset, cnt in offset_counts.items():
+        if cnt >= num_matching:
+            return offset
+    return None
 
 
 def apply_orientation(scanner: Scanner, orientation: Coord) -> Scanner:
