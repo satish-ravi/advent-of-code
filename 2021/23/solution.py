@@ -80,10 +80,25 @@ class State:
                     break
             if cur_row_index is None:
                 continue
+            amphipod = self.rows[cur_row_index][room_pos]
+            dest_room_pos = amphipod_to_room_pos(amphipod)
 
-            for hallway_pos in self.get_hallway_pos(True):
-                if self.has_hallway_path(min(hallway_pos, room_pos), max(hallway_pos, room_pos) + 1):
-                    neighbors.append(self.create_neighbor(hallway_pos, room_pos, cur_row_index))
+            if self.is_col_partially_complete(dest_room_pos) and self.has_hallway_path(
+                min(room_pos, dest_room_pos), max(room_pos, dest_room_pos + 1)
+            ):
+                dest_row = len(self.rows) - 1
+                while dest_row >= 0 and self.rows[dest_row][dest_room_pos] != ".":
+                    dest_row -= 1
+
+                neighbor = State(deepcopy(self.rows), self.hallway)
+                neighbor.rows[cur_row_index] = replace_str(self.rows[cur_row_index], room_pos, ".")
+                neighbor.rows[dest_row] = replace_str(self.rows[dest_row], dest_room_pos, amphipod)
+                movement = abs(dest_room_pos - room_pos) + cur_row_index + 1 + dest_row + 1
+                neighbors.append((movement * COST_MAP[amphipod], neighbor))
+            else:
+                for hallway_pos in self.get_hallway_pos(True):
+                    if self.has_hallway_path(min(hallway_pos, room_pos), max(hallway_pos, room_pos) + 1):
+                        neighbors.append(self.create_neighbor(hallway_pos, room_pos, cur_row_index))
 
         for hallway_pos in self.get_hallway_pos(False):
             dest_room_pos = amphipod_to_room_pos(self.hallway[hallway_pos])
