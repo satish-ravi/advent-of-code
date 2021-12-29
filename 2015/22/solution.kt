@@ -5,7 +5,16 @@ data class Effect(val name: String, val armor: Int, val damage: Int, val mana: I
 
 data class Spell(val name: String, val mana: Int, val damage: Int, val hitPoints: Int, val effect: Effect? = null)
 
-data class State(val playerHitPoints: Int, val bossHitPoints: Int, val mana: Int, val spentMana: Int, val effects: List<Effect>, val playerTurn: Boolean = true, val prevState: State? = null, val spells: String = "")
+data class State(
+    val playerHitPoints: Int,
+    val bossHitPoints: Int,
+    val mana: Int,
+    val spentMana: Int,
+    val effects: List<Effect>,
+    val playerTurn: Boolean = true,
+    val prevState: State? = null,
+    val spells: String = ""
+)
 
 fun readInput(): Pair<Int, Int> {
     val parsed = generateSequence(::readLine).map { it -> it.split(": ").get(1).toInt() }.toList()
@@ -20,14 +29,6 @@ fun getSpells(): List<Spell> {
         Spell("Poison", 173, 0, 0, Effect("Poison", 0, 3, 0, 6)),
         Spell("Recharge", 229, 0, 0, Effect("Recharge", 0, 0, 101, 5))
     )
-}
-
-fun toShortString(effects: List<Effect>): String {
-    var result = ""
-    for (effect in effects) {
-        result += "${effect.name},${effect.turns};"
-    }
-    return result
 }
 
 fun solve(startBossHitPoints: Int, bossDamage: Int, perRoundLoss: Int = 0): Int {
@@ -74,15 +75,36 @@ fun solve(startBossHitPoints: Int, bossDamage: Int, perRoundLoss: Int = 0): Int 
                         newEffects.add(effect.copy())
                     }
                 }
-                queue.add(State(playerHitPoints + spell.hitPoints, bossHitPoints - spell.damage, mana - spell.mana, spentMana + spell.mana, newEffects, false, current, current.spells + spell.name + ";"))
+                queue.add(
+                    State(
+                        playerHitPoints + spell.hitPoints,
+                        bossHitPoints - spell.damage,
+                        mana - spell.mana,
+                        spentMana + spell.mana,
+                        newEffects,
+                        false,
+                        current,
+                        current.spells + spell.name + ";"
+                    )
+                )
             }
         } else {
-            queue.add(State(playerHitPoints - max(1, bossDamage - armor), bossHitPoints, mana, spentMana, activeEffects, true, current, current.spells))
+            queue.add(
+                State(
+                    playerHitPoints - max(1, bossDamage - armor),
+                    bossHitPoints,
+                    mana,
+                    spentMana,
+                    activeEffects,
+                    true,
+                    current,
+                    current.spells
+                )
+            )
         }
     }
     throw Exception("player cannot win")
 }
-
 
 fun main() {
     val (bossHitPoints, bossDamage) = readInput()

@@ -2,7 +2,7 @@ fun transform(sequence: String): String {
     var prev = sequence[0]
     var count = 1
     var newSequence = ""
-    for (i in 1..sequence.length-1) {
+    for (i in 1..sequence.length - 1) {
         if (sequence[i] == prev) {
             count++
         } else {
@@ -16,7 +16,10 @@ fun transform(sequence: String): String {
 
 fun transformRegex(sequence: String): String {
     val regex = "(\\d)\\1*".toRegex()
-    return regex.findAll(sequence).fold("", { acc, matchResult -> acc + matchResult.value.length + matchResult.value[0]})
+    return regex.findAll(sequence).fold("", {
+        acc, matchResult ->
+        acc + matchResult.value.length + matchResult.value[0]
+    })
 }
 
 fun readInput(): String {

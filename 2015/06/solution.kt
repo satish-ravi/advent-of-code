@@ -1,4 +1,4 @@
-import kotlin.math.*;
+import kotlin.math.max
 
 enum class Operation {
     ON, OFF, TOGGLE
@@ -17,13 +17,16 @@ data class Instruction(val op: Operation, val start: Pair<Int, Int>, val end: Pa
     companion object {
         fun createFromString(strRep: String): Instruction {
             val regex = "(turn off|turn on|toggle) (\\d+),(\\d+) through (\\d+),(\\d+)".toRegex()
-            return regex.matchEntire(strRep)?.destructured?.let { (ins, sx, sy, ex, ey) -> Instruction(stringToOperation(ins), Pair(sx.toInt(), sy.toInt()), Pair(ex.toInt(), ey.toInt()))} ?: throw IllegalArgumentException("Bad input $strRep")
+            return regex.matchEntire(strRep)?.destructured?.let {
+                (ins, sx, sy, ex, ey) ->
+                Instruction(stringToOperation(ins), Pair(sx.toInt(), sy.toInt()), Pair(ex.toInt(), ey.toInt()))
+            } ?: throw IllegalArgumentException("Bad input $strRep")
         }
     }
 }
 
 class LightSystem(val isPart2: Boolean = false) {
-    val lights = Array(1000000) {0}
+    val lights = Array(1000000) { 0 }
 
     fun applyInstruction(ins: Instruction) {
         for (x in ins.start.first..ins.end.first) {
@@ -60,10 +63,11 @@ class LightSystem(val isPart2: Boolean = false) {
 }
 
 fun readInput(): List<Instruction> {
-    val input = generateSequence(::readLine);
+    val input = generateSequence(::readLine)
     return input.map {
-        value -> Instruction.createFromString(value)
-    }.toList();
+        value ->
+        Instruction.createFromString(value)
+    }.toList()
 }
 
 fun part1(input: List<Instruction>): Int {
@@ -83,7 +87,7 @@ fun part2(input: List<Instruction>): Int {
 }
 
 fun main() {
-    var input = readInput();
-    println("part1: ${part1(input)}");
-    println("part2: ${part2(input)}");
+    var input = readInput()
+    println("part1: ${part1(input)}")
+    println("part2: ${part2(input)}")
 }

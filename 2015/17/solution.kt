@@ -1,8 +1,9 @@
 fun readInput(): List<Int> {
-    val input = generateSequence(::readLine);
+    val input = generateSequence(::readLine)
     return input.map {
-        value -> value.toInt()
-    }.toList();
+        value ->
+        value.toInt()
+    }.toList()
 }
 
 fun getSubsetSum(expected_sum: Int, current_array: List<Int>, remaining: List<Int>): ArrayList<List<Int>> {
@@ -16,7 +17,7 @@ fun getSubsetSum(expected_sum: Int, current_array: List<Int>, remaining: List<In
     val result = ArrayList<List<Int>>()
     for (i in 0 until remaining.size) {
         val next_array = current_array + remaining.slice(i..i)
-        val next_remaining = remaining.slice(i+1..remaining.size-1)
+        val next_remaining = remaining.slice(i + 1..remaining.size - 1)
         result.addAll(getSubsetSum(expected_sum, next_array, next_remaining))
     }
     return result

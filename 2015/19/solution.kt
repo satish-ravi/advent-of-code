@@ -10,8 +10,8 @@ fun readInput(): Triple<Map<String, List<String>>, Map<String, List<String>>, St
         } else if (line.contains(" => ")) {
             val match = replacementRegex.matchEntire(line)!!
             val (lhs, rhs) = match.destructured
-            replacements.getOrPut(lhs){ ArrayList<String>() }.add(rhs)
-            reverseReplacements.getOrPut(rhs){ ArrayList<String>() }.add(lhs)
+            replacements.getOrPut(lhs) { ArrayList<String>() }.add(rhs)
+            reverseReplacements.getOrPut(rhs) { ArrayList<String>() }.add(lhs)
         } else {
             molecule = line
         }
@@ -22,10 +22,10 @@ fun readInput(): Triple<Map<String, List<String>>, Map<String, List<String>>, St
 fun get_replacements(replacements: Map<String, List<String>>, molecule: String): HashSet<String> {
     val results = hashSetOf<String>()
     for ((lhs, rhs_list) in replacements) {
-        for (i in 0 until molecule.length-lhs.length+1) {
-            if (lhs == molecule.slice(i..i+lhs.length-1)) {
+        for (i in 0 until molecule.length - lhs.length + 1) {
+            if (lhs == molecule.slice(i..i + lhs.length - 1)) {
                 for (rhs in rhs_list) {
-                    results.add(molecule.slice(0..i-1) + rhs + molecule.slice(i+lhs.length..molecule.length-1))
+                    results.add(molecule.slice(0..i - 1) + rhs + molecule.slice(i + lhs.length..molecule.length - 1))
                 }
             }
         }
@@ -40,7 +40,7 @@ fun part1(replacements: Map<String, List<String>>, molecule: String): Int {
 fun part2Slow(replacements: Map<String, List<String>>, molecule: String): Int {
     var queue = ArrayDeque<Pair<Int, String>>()
     queue.add(Pair(0, "e"))
-    var visited = HashSet<String>();
+    var visited = HashSet<String>()
     while (queue.size > 0) {
         var (steps, current_molecule) = queue.removeFirst()
         visited.add(current_molecule)
@@ -62,14 +62,20 @@ fun part2Slow(replacements: Map<String, List<String>>, molecule: String): Int {
 fun breakBySubstring(main: String, sub: String): List<Pair<String, String>> {
     var result = mutableListOf<Pair<String, String>>()
     for (i in 0 until main.length - sub.length + 1) {
-        if (main.slice(i..i+sub.length - 1) == sub) {
-            result.add(Pair(main.slice(0..i-1), main.slice(i + sub.length..main.length-1)))
+        if (main.slice(i..i + sub.length - 1) == sub) {
+            result.add(Pair(main.slice(0..i - 1), main.slice(i + sub.length..main.length - 1)))
         }
     }
     return result
 }
 
-fun findShortest(revReplacements: Map<String, List<String>>, molecule: String, currentStep: Int, known: HashMap<String, Int>, currentKnownBest: Int): Int {
+fun findShortest(
+    revReplacements: Map<String, List<String>>,
+    molecule: String,
+    currentStep: Int,
+    known: HashMap<String, Int>,
+    currentKnownBest: Int
+): Int {
     if (known.contains(molecule)) {
         var knownBest = known.get(molecule)!!
         return if (knownBest == Int.MAX_VALUE) Int.MAX_VALUE else currentStep + knownBest
@@ -81,7 +87,7 @@ fun findShortest(revReplacements: Map<String, List<String>>, molecule: String, c
     for ((rhs, lhsList) in revReplacements) {
         for ((left, right) in breakBySubstring(molecule, rhs)) {
             for (lhs in lhsList) {
-                var shortest = findShortest(revReplacements, left + lhs + right, currentStep + 1, known, knownBest);
+                var shortest = findShortest(revReplacements, left + lhs + right, currentStep + 1, known, knownBest)
                 if (shortest < knownBest) {
                     knownBest = shortest
                 }

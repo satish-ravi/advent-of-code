@@ -10,14 +10,26 @@ data class AuntSue(val number: Int, val properties: HashMap<String, Int>) {
 }
 
 fun readInput(): List<AuntSue> {
-    val input = generateSequence(::readLine);
+    val input = generateSequence(::readLine)
     return input.map {
-        value -> AuntSue.createFromString(value)
-    }.toList();
+        value ->
+        AuntSue.createFromString(value)
+    }.toList()
 }
 
 fun part1(aunts: List<AuntSue>): Int {
-    val tape = hashMapOf("children" to 3, "cats" to 7, "samoyeds" to 2, "pomeranians" to 3, "akitas" to 0, "vizslas" to 0, "goldfish" to 5, "trees" to 3, "cars" to 2, "perfumes" to 1)
+    val tape = hashMapOf(
+        "children" to 3,
+        "cats" to 7,
+        "samoyeds" to 2,
+        "pomeranians" to 3,
+        "akitas" to 0,
+        "vizslas" to 0,
+        "goldfish" to 5,
+        "trees" to 3,
+        "cars" to 2,
+        "perfumes" to 1
+    )
     for (aunt in aunts) {
         var isMatch = true
         for ((name, value) in aunt.properties) {
@@ -55,7 +67,6 @@ fun part2(aunts: List<AuntSue>): Int {
     }
     throw Exception("no match found")
 }
-
 
 fun main() {
     var input = readInput()

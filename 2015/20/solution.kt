@@ -1,4 +1,4 @@
-import kotlin.math.*
+import kotlin.math.sqrt
 
 fun solve(n: Int): Pair<Int, Int> {
     var house = 1

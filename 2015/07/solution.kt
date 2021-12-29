@@ -1,5 +1,5 @@
 class Circuit(val instructions: HashMap<String, String>) {
-    val resolvedValues = HashMap<String,Int>()
+    val resolvedValues = HashMap<String, Int>()
 
     fun get(wire: String): Int {
         if (!resolvedValues.containsKey(wire)) {
@@ -36,10 +36,10 @@ class Circuit(val instructions: HashMap<String, String>) {
     }
 }
 
-fun readInput(): HashMap<String,String> {
+fun readInput(): HashMap<String, String> {
     val input = generateSequence(::readLine)
     val regex = "(.+) -> (.+)".toRegex()
-    val instructions = HashMap<String,String>()
+    val instructions = HashMap<String, String>()
     for (line in input) {
         val (lhs, rhs) = regex.find(line)!!.destructured
         instructions.put(rhs, lhs)
@@ -47,12 +47,12 @@ fun readInput(): HashMap<String,String> {
     return instructions
 }
 
-fun part1(input: HashMap<String,String>): Int {
+fun part1(input: HashMap<String, String>): Int {
     var circuit = Circuit(input)
     return circuit.get("a")
 }
 
-fun part2(input: HashMap<String,String>, part1Res: Int): Int {
+fun part2(input: HashMap<String, String>, part1Res: Int): Int {
     input.put("b", part1Res.toString())
     var circuit = Circuit(input)
     return circuit.get("a")

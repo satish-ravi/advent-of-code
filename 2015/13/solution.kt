@@ -1,5 +1,3 @@
-import kotlin.math.*;
-
 data class Statement(val person: String, val next: String, val happiness_units: Int) {
     companion object {
         fun createFromString(strRep: String): Statement {
@@ -21,13 +19,13 @@ fun genPermutations(list: List<Int>): List<List<Int>> {
     }
     val arr = list.toTypedArray()
     val result = ArrayList<List<Int>>()
-    for (i in 0..list.size-1) {
+    for (i in 0..list.size - 1) {
         val start: Int = arr[i]
         arr[i] = arr[0]
         arr[0] = start
-        
-        val subPermutations: List<List<Int>> = genPermutations(arr.slice(1..list.size-1))
-        result.addAll(subPermutations.map { perm: List<Int> -> arrayListOf(start) + perm})
+
+        val subPermutations: List<List<Int>> = genPermutations(arr.slice(1..list.size - 1))
+        result.addAll(subPermutations.map { perm: List<Int> -> arrayListOf(start) + perm })
 
         arr[0] = arr[i]
         arr[i] = start
@@ -45,20 +43,20 @@ class TableArranger {
             peopleSet.add(statement.person)
         }
         people = peopleSet.toList()
-        happiness = Array(people.size) { Array(people.size) { 0 }}
+        happiness = Array(people.size) { Array(people.size) { 0 } }
         for (statement in statements) {
             val i1 = people.indexOf(statement.person)
             val i2 = people.indexOf(statement.next)
             happiness[i1][i2] = statement.happiness_units
-        }   
+        }
     }
 
     fun getAllArragementsHappiness(): ArrayList<Int> {
-        val allArrangements = genPermutations((0..people.size-1).toList())
+        val allArrangements = genPermutations((0..people.size - 1).toList())
         val result = ArrayList<Int>()
         for (arrangement in allArrangements) {
-            var sum = 0;
-            for (i in 0..people.size-1) {
+            var sum = 0
+            for (i in 0..people.size - 1) {
                 var cur = arrangement[i]
                 val next = arrangement[(i + 1) % people.size]
                 sum += happiness[cur][next] + happiness[next][cur]
@@ -70,10 +68,11 @@ class TableArranger {
 }
 
 fun readInput(): List<Statement> {
-    val input = generateSequence(::readLine);
+    val input = generateSequence(::readLine)
     return input.map {
-        value -> Statement.createFromString(value)
-    }.toList();
+        value ->
+        Statement.createFromString(value)
+    }.toList()
 }
 
 fun compute(input: List<Statement>): Int {

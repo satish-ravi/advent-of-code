@@ -1,11 +1,11 @@
 fun readInput(): List<String> {
-    val input = generateSequence(::readLine);
-    return input.toList();
+    val input = generateSequence(::readLine)
+    return input.toList()
 }
 
 fun countVowels(str: String): Int {
-    val vowels = arrayOf('a', 'e', 'i', 'o', 'u');
-    return str.toList().filter{c -> vowels.contains(c)}.size
+    val vowels = arrayOf('a', 'e', 'i', 'o', 'u')
+    return str.toList().filter { c -> vowels.contains(c) }.size
 }
 
 fun hasRepeat(str: String, offset: Int): Boolean {
@@ -14,12 +14,12 @@ fun hasRepeat(str: String, offset: Int): Boolean {
             return true
         }
     }
-    return false;
+    return false
 }
 
 fun hasInvalid(str: String): Boolean {
-    val invalidStrings = arrayOf("ab", "cd", "pq", "xy").toList();
-    return str.findAnyOf(invalidStrings) != null;
+    val invalidStrings = arrayOf("ab", "cd", "pq", "xy").toList()
+    return str.findAnyOf(invalidStrings) != null
 }
 
 fun hasRepeatingPair(str: String): Boolean {
@@ -28,25 +28,25 @@ fun hasRepeatingPair(str: String): Boolean {
         var pair = str.substring(i, i + 2)
         if (pairs.containsKey(pair)) {
             if (pairs.get(pair) != i - 1) {
-                return true;
+                return true
             }
         } else {
-            pairs.put(pair, i);
+            pairs.put(pair, i)
         }
     }
-    return false;
+    return false
 }
 
 fun part1(input: List<String>): Int {
-    return input.filter{str -> !hasInvalid(str) && countVowels(str) >= 3 && hasRepeat(str, 1)}.size
+    return input.filter { str -> !hasInvalid(str) && countVowels(str) >= 3 && hasRepeat(str, 1) }.size
 }
 
 fun part2(input: List<String>): Int {
-    return input.filter{str -> hasRepeatingPair(str) && hasRepeat(str, 2)}.size
+    return input.filter { str -> hasRepeatingPair(str) && hasRepeat(str, 2) }.size
 }
 
 fun main() {
-    var input = readInput();
-    println("part1: ${part1(input)}");
-    println("part2: ${part2(input)}");
+    var input = readInput()
+    println("part1: ${part1(input)}")
+    println("part2: ${part2(input)}")
 }

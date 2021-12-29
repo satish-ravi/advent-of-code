@@ -1,4 +1,4 @@
-import kotlin.math.*;
+import kotlin.math.min
 
 data class Reindeer(val name: String, val speed: Int, val flying: Int, val resting: Int) {
     companion object {
@@ -12,10 +12,11 @@ data class Reindeer(val name: String, val speed: Int, val flying: Int, val resti
 }
 
 fun readInput(): List<Reindeer> {
-    val input = generateSequence(::readLine);
+    val input = generateSequence(::readLine)
     return input.map {
-        value -> Reindeer.createFromString(value)
-    }.toList();
+        value ->
+        Reindeer.createFromString(value)
+    }.toList()
 }
 
 fun getDistanceTravelled(reindeer: Reindeer, time: Int): Int {
@@ -25,11 +26,11 @@ fun getDistanceTravelled(reindeer: Reindeer, time: Int): Int {
 }
 
 fun part1(input: List<Reindeer>): Int {
-    return input.map { reindeer -> getDistanceTravelled(reindeer, 2053) }.toList().maxOrNull()!!
+    return input.map { reindeer -> getDistanceTravelled(reindeer, 2503) }.toList().maxOrNull()!!
 }
 
 fun part2(input: List<Reindeer>): Int {
-    val points = IntArray(input.size) {0}
+    val points = IntArray(input.size) { 0 }
     for (t in 1..2503) {
         val distances = input.map { reindeer -> getDistanceTravelled(reindeer, t) }.toList()
         val max = distances.maxOrNull()!!
