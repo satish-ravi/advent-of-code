@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -23,26 +22,31 @@ class Keypad1 implements Keypad {
   Point p = Point(1, 1);
 
   void apply(String dir) {
-    switch(dir) {
-      case 'U': {
-        this.p.y = max(this.p.y - 1, 0);
-      }
-      break;
-      case 'D': {
-        this.p.y = min(this.p.y + 1, 2);
-      }
-      break;
-      case 'L': {
-        this.p.x = max(this.p.x - 1, 0);
-      }
-      break;
-      case 'R': {
-        this.p.x = min(this.p.x + 1, 2);
-      }
-      break;
-      default: {
-        throw new Exception('invalid instruction $dir');
-      }
+    switch (dir) {
+      case 'U':
+        {
+          this.p.y = max(this.p.y - 1, 0);
+        }
+        break;
+      case 'D':
+        {
+          this.p.y = min(this.p.y + 1, 2);
+        }
+        break;
+      case 'L':
+        {
+          this.p.x = max(this.p.x - 1, 0);
+        }
+        break;
+      case 'R':
+        {
+          this.p.x = min(this.p.x + 1, 2);
+        }
+        break;
+      default:
+        {
+          throw new Exception('invalid instruction $dir');
+        }
     }
   }
 
@@ -72,26 +76,31 @@ class Keypad2 implements Keypad {
 
   void apply(String dir) {
     var newPoint = Point(this.p.x, this.p.y);
-    switch(dir) {
-      case 'U': {
-        newPoint.y = max(this.p.y - 1, 0);
-      }
-      break;
-      case 'D': {
-        newPoint.y = min(this.p.y + 1, 4);
-      }
-      break;
-      case 'L': {
-        newPoint.x = max(this.p.x - 1, 0);
-      }
-      break;
-      case 'R': {
-        newPoint.x = min(this.p.x + 1, 4);
-      }
-      break;
-      default: {
-        throw new Exception('invalid instruction $dir');
-      }
+    switch (dir) {
+      case 'U':
+        {
+          newPoint.y = max(this.p.y - 1, 0);
+        }
+        break;
+      case 'D':
+        {
+          newPoint.y = min(this.p.y + 1, 4);
+        }
+        break;
+      case 'L':
+        {
+          newPoint.x = max(this.p.x - 1, 0);
+        }
+        break;
+      case 'R':
+        {
+          newPoint.x = min(this.p.x + 1, 4);
+        }
+        break;
+      default:
+        {
+          throw new Exception('invalid instruction $dir');
+        }
     }
     if (pointToCode.containsKey(newPoint)) {
       this.p = newPoint;

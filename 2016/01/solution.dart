@@ -18,42 +18,46 @@ int solve(List<String> input, [bool part2 = false]) {
     facing = (facing + (dir == 'R' ? 1 : -1) + 4) % 4;
     final newPoints = <String>[];
     switch (facing) {
-      case 0: {
-        for (var dy = 1; dy <= len; dy++) {
-          var cy = y + dy;
-          newPoints.add('$x,$cy');
+      case 0:
+        {
+          for (var dy = 1; dy <= len; dy++) {
+            var cy = y + dy;
+            newPoints.add('$x,$cy');
+          }
+          y += len;
         }
-        y += len;
-      }
-      break;
-      case 1: {
-        for (var dx = 1; dx <= len; dx++) {
-          var cx = x + dx;
-          newPoints.add('$cx,$y');
+        break;
+      case 1:
+        {
+          for (var dx = 1; dx <= len; dx++) {
+            var cx = x + dx;
+            newPoints.add('$cx,$y');
+          }
+          x += len;
         }
-        x += len;
-      }
-      break;
-      case 2: {
-        for (var dy = 1; dy <= len; dy++) {
-          var cy = y - dy;
-          newPoints.add('$x,$cy');
+        break;
+      case 2:
+        {
+          for (var dy = 1; dy <= len; dy++) {
+            var cy = y - dy;
+            newPoints.add('$x,$cy');
+          }
+          y -= len;
         }
-        y -= len;
-      }
-      break;
-      case 3: {
-        for (var dx = 1; dx <= len; dx++) {
-          var cx = x - dx;
-          newPoints.add('$cx,$y');
+        break;
+      case 3:
+        {
+          for (var dx = 1; dx <= len; dx++) {
+            var cx = x - dx;
+            newPoints.add('$cx,$y');
+          }
+          x -= len;
         }
-        x -= len;
-      }
-      break;
-      default: {
-        throw Exception('invalid facing direction');
-      }
-      break;
+        break;
+      default:
+        {
+          throw Exception('invalid facing direction');
+        }
     }
     for (var point in newPoints) {
       if (part2 && visited.contains(point)) {
@@ -74,8 +78,6 @@ int solve(List<String> input, [bool part2 = false]) {
 
 void main() {
   var input = readInput();
-  var p1 = solve(input);
-  print('part1: $p1');
-  var p2 = solve(input, true);
-  print('part2: $p2');
+  print('part1: ${solve(input)}');
+  print('part2: ${solve(input, true)}');
 }
