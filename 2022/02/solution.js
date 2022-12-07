@@ -35,4 +35,4 @@ function part2(guide) {
 
 const guide = readInput()
 console.log('part1:', part1(guide))
-console.log('part1:', part2(guide))
+console.log('part2:', part2(guide))
